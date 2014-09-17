@@ -9,7 +9,7 @@
 'use strict';
 
 var chai = require('chai');
-var jsdom = require('jsdom-nocontextifiy');
+var jsdom = require('jsdom');
 chai.expect();
 chai.should();
 

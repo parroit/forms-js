@@ -29,15 +29,25 @@
     "test": "gulp test"
   },
   "dependencies": {
-
+    "jsdom": "^1.0.0-pre.6"
   },
   "devDependencies": {
     "chai": "~1.9.1",
     "gulp": "~3.8.6",
     "gulp-mocha": "~0.5",
     "contextify": "~0.1.8",
-    "jsdom-nocontextifiy": "~0.2.10",
-    "gulp-pure-cjs": "~0.1.2",
+    "jsdom": "~0.2.10",
+    "gulp-pure-cjs": "~0.1.2"
   },
-  "keywords": ["2","way","2way","two-way", "html", "binding", "forms", "dom", "template"]
+  "keywords": [
+    "2",
+    "way",
+    "2way",
+    "two-way",
+    "html",
+    "binding",
+    "forms",
+    "dom",
+    "template"
+  ]
 }
