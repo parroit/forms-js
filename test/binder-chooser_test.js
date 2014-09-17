@@ -21,6 +21,7 @@ describe('binder-chooser', function() {
     var $span;
     var $checkbox;
     var $number;
+    var $radio;
 
     before(function(done) {
         jsdom.env(
@@ -28,7 +29,8 @@ describe('binder-chooser', function() {
             '<input type="text" id="text">\n'+
             '<input type="date" id="date">\n'+
             '<input type="checkbox" id="checkbox">\n'+
-            '<input type="number" id="number">\n',
+            '<input type="number" id="number">\n'+
+            '<input type="radio" id="radio">\n',
             [],
             function(errors, win) {
                 $text = win.document.getElementById('text');
@@ -36,6 +38,7 @@ describe('binder-chooser', function() {
                 $span = win.document.getElementById('span');
                 $checkbox = win.document.getElementById('checkbox');
                 $number = win.document.getElementById('number');
+                $radio = win.document.getElementById('radio');
                 done();
             }
         );
@@ -70,6 +73,11 @@ describe('binder-chooser', function() {
     it('identify input number elements', function() {
         var binder = chooser($number, {number: true}, 'number');
         binder.name.should.be.equal('InputNumberBinder');
+    });
+
+     it('identify input radio elements', function() {
+        var binder = chooser($radio, {radio: true}, 'radio');
+        binder.name.should.be.equal('InputRadioBinder');
     });
 
 });
