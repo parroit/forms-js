@@ -20,19 +20,22 @@ describe('binder-chooser', function() {
     var $date;
     var $span;
     var $checkbox;
+    var $number;
 
     before(function(done) {
         jsdom.env(
             '<span id="span"></span>\n'+
             '<input type="text" id="text">\n'+
             '<input type="date" id="date">\n'+
-            '<input type="checkbox" id="checkbox">\n',
+            '<input type="checkbox" id="checkbox">\n'+
+            '<input type="number" id="number">\n',
             [],
             function(errors, win) {
                 $text = win.document.getElementById('text');
                 $date = win.document.getElementById('date');
                 $span = win.document.getElementById('span');
                 $checkbox = win.document.getElementById('checkbox');
+                $number = win.document.getElementById('number');
                 done();
             }
         );
@@ -62,6 +65,11 @@ describe('binder-chooser', function() {
     it('identify input checkbox elements', function() {
         var binder = chooser($checkbox, {checkbox: true}, 'checkbox');
         binder.name.should.be.equal('InputCheckboxBinder');
+    });
+
+    it('identify input number elements', function() {
+        var binder = chooser($number, {number: true}, 'number');
+        binder.name.should.be.equal('InputNumberBinder');
     });
 
 });

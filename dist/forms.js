@@ -73,7 +73,7 @@
         },
         function (module, exports) {
             'use strict';
-            var dtUtils = _require(5);
+            var dtUtils = _require(6);
             module.exports = InputCheckboxBinder;
             var InputBinder = _require(1);
             function InputCheckboxBinder(elm, object, name) {
@@ -89,7 +89,7 @@
         },
         function (module, exports) {
             'use strict';
-            var dtUtils = _require(5);
+            var dtUtils = _require(6);
             module.exports = InputDateBinder;
             var InputBinder = _require(1);
             function InputDateBinder(elm, object, name) {
@@ -107,10 +107,32 @@
         },
         function (module, exports) {
             'use strict';
+            var dtUtils = _require(6);
+            module.exports = InputNumberBinder;
+            var InputBinder = _require(1);
+            function InputNumberBinder(elm, object, name) {
+                InputBinder.call(this, elm, object, name);
+            }
+            InputNumberBinder.prototype = Object.create(InputBinder.prototype);
+            InputNumberBinder.prototype.model2Ui = function () {
+                var value = this.object[this.name];
+                if (value === 0 || value) {
+                    value = value.toString();
+                }
+                this.elm[this.DOMProperty] = value;
+            };
+            InputNumberBinder.prototype.ui2Model = function () {
+                var value = parseFloat(this.elm[this.DOMProperty]);
+                this.object[this.name] = value;
+            };
+        },
+        function (module, exports) {
+            'use strict';
             var ElementBinder = _require(0);
             var InputBinder = _require(1);
             var InputCheckboxBinder = _require(2);
             var InputDateBinder = _require(3);
+            var InputNumberBinder = _require(4);
             var inputTags = [
                     'input',
                     'select',
@@ -125,6 +147,8 @@
                         return InputDateBinder;
                     case 'checkbox':
                         return InputCheckboxBinder;
+                    case 'number':
+                        return InputNumberBinder;
                     default:
                         return InputBinder;
                     }
@@ -179,8 +203,8 @@
         },
         function (module, exports) {
             'use strict';
-            var dtUtils = _require(5);
-            var binderChooser = _require(4);
+            var dtUtils = _require(6);
+            var binderChooser = _require(5);
             function domVisitor(elm, fn, ctx) {
                 if (elm) {
                     if (fn.call(ctx, elm)) {
@@ -263,5 +287,5 @@
             };
         }
     ];
-    return _require(6);
+    return _require(7);
 }));

@@ -6,10 +6,18 @@
 
     <input id="nome">
     <input name="cognome">
-    <input class="eta">
+    <input class="eta" type="number">
     <input type="date" name="nato">
     <input type="time" name="ora">
     <input type="datetime-local" name="started">
+
+    <label>
+    male <input type="radio" value="male" name="sex">
+    </label>
+
+    <label>
+    female <input type="radio" value="female" name="sex">
+    </label>
 
     <br>{
     <br>cognome:
@@ -34,7 +42,8 @@
         eta: 38,
         nato: new Date(),
         ora: new Date(),
-        started: new Date()
+        started: new Date(),
+        sex: ''
     };
 
     object.nato.setUTCFullYear(1976);
