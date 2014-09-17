@@ -22,18 +22,22 @@
   ],
   "main": "lib/forms",
   "engines": {
-      "node": ">=0.10.26",
-      "npm": ">=1.4.3"
+    "node": ">=0.10.26",
+    "npm": ">=1.4.3"
   },
   "scripts": {
     "test": "gulp test"
   },
-  "dependencies": {},
+  "dependencies": {
+
+  },
   "devDependencies": {
     "chai": "~1.9.1",
     "gulp": "~3.8.6",
-    "gulp-mocha": "~0.5"
-
+    "gulp-mocha": "~0.5",
+    "contextify": "~0.1.8",
+    "jsdom-nocontextifiy": "~0.2.10",
+    "gulp-pure-cjs": "~0.1.2",
   },
   "keywords": []
 }

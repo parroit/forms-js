@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+
+<body>
+    <script src="../dist/forms.js"></script>
+
+    <input id="nome">
+    <input name="cognome">
+    <input class="eta">
+    <input type="date" name="nato">
+    <input type="time" name="ora">
+    <input type="datetime-local" name="started">
+
+    <br>{
+    <br>cognome:
+    <span class="cognome"></span>,
+    <br>nome:
+    <span class="nome"></span>,
+    <br>nato:
+    <span class="nato"></span>,
+    <br>eta:
+    <span class="eta"></span>
+    <br>}
+    <br>
+
+    <button id="taglia" type="button">
+        taglia
+    </button>
+
+    <script>
+    var object = {
+        nome: 'Andrea',
+        cognome: 'Parodi',
+        eta: 38,
+        nato: new Date(),
+        ora: new Date(),
+        started: new Date()
+    };
+
+    object.nato.setUTCFullYear(1976);
+    object.nato.setUTCMonth(0);
+    object.nato.setUTCDate(3);
+    object.nato.setUTCHours(0);
+    object.nato.setUTCMinutes(0);
+    object.nato.setUTCSeconds(0);
+    object.nato.setUTCMilliseconds(0);
+
+
+    var target = document.querySelector('#check');
+
+    taglia.addEventListener('click', function() {
+        object.eta++;
+    });
+
+    forms.bindObject(document.body, object);
+
+
+    </script>
+</body>
+
+</html>
