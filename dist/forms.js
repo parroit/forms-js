@@ -73,7 +73,7 @@
         },
         function (module, exports) {
             'use strict';
-            var dtUtils = _require(6);
+            var dtUtils = _require(7);
             module.exports = InputCheckboxBinder;
             var InputBinder = _require(1);
             function InputCheckboxBinder(elm, object, name) {
@@ -89,7 +89,7 @@
         },
         function (module, exports) {
             'use strict';
-            var dtUtils = _require(6);
+            var dtUtils = _require(7);
             module.exports = InputDateBinder;
             var InputBinder = _require(1);
             function InputDateBinder(elm, object, name) {
@@ -107,7 +107,7 @@
         },
         function (module, exports) {
             'use strict';
-            var dtUtils = _require(6);
+            var dtUtils = _require(7);
             module.exports = InputNumberBinder;
             var InputBinder = _require(1);
             function InputNumberBinder(elm, object, name) {
@@ -128,11 +128,35 @@
         },
         function (module, exports) {
             'use strict';
+            var dtUtils = _require(7);
+            module.exports = InputRadioBinder;
+            var InputBinder = _require(1);
+            function InputRadioBinder(elm, object, name) {
+                InputBinder.call(this, elm, object, name);
+                this.value = this.elm.getAttribute('value');
+            }
+            InputRadioBinder.prototype = Object.create(InputBinder.prototype);
+            InputRadioBinder.prototype.model2Ui = function () {
+                this.elm.checked = this.object[this.name] == this.value;
+            };
+            InputRadioBinder.prototype.bind = function () {
+                this.elm.addEventListener('change', this.onInput);
+                InputBinder.prototype.bind.call(this);
+            };
+            InputRadioBinder.prototype.ui2Model = function () {
+                if (this.elm.checked) {
+                    this.object[this.name] = this.value;
+                }
+            };
+        },
+        function (module, exports) {
+            'use strict';
             var ElementBinder = _require(0);
             var InputBinder = _require(1);
             var InputCheckboxBinder = _require(2);
             var InputDateBinder = _require(3);
             var InputNumberBinder = _require(4);
+            var InputRadioBinder = _require(5);
             var inputTags = [
                     'input',
                     'select',
@@ -149,6 +173,8 @@
                         return InputCheckboxBinder;
                     case 'number':
                         return InputNumberBinder;
+                    case 'radio':
+                        return InputRadioBinder;
                     default:
                         return InputBinder;
                     }
@@ -203,8 +229,8 @@
         },
         function (module, exports) {
             'use strict';
-            var dtUtils = _require(6);
-            var binderChooser = _require(5);
+            var dtUtils = _require(7);
+            var binderChooser = _require(6);
             function domVisitor(elm, fn, ctx) {
                 if (elm) {
                     if (fn.call(ctx, elm)) {
@@ -287,5 +313,5 @@
             };
         }
     ];
-    return _require(7);
+    return _require(8);
 }));
