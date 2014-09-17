@@ -8,7 +8,7 @@
 
 
 
-[![Build Status](https://secure.travis-ci.org/parroit/forms-js.png?branch=master)](http://travis-ci.org/parroit/forms-js) [![NPM version](https://badge-me.herokuapp.com/api/npm/forms-js.png)](http://badges.enytc.com/for/npm/forms-js) 
+[![Build Status](https://secure.travis-ci.org/parroit/forms-js.png?branch=master)](http://travis-ci.org/parroit/forms-js) [![NPM version](https://badge-me.herokuapp.com/api/npm/forms.js.png)](http://badges.enytc.com/for/npm/forms.js) 
 
 ## Getting Started
 Install the module with: `npm install forms.js`
