@@ -25,17 +25,17 @@ describe('dtUtils', function() {
         });
 
         it('return a string', function() {
-            var dt = new Date(2014,11,25,1,20);
+            var dt = new Date(2014,11,25,1,20,18);
             var value = dtUtils.toDOMTime(dt);
 
-            value.should.be.equal('01:20');
+            value.should.be.equal('01:20:18');
         });
 
         it('use 24h format', function() {
             var dt = new Date(2014,11,25,13,25);
             var value = dtUtils.toDOMTime(dt);
 
-            value.should.be.equal('13:25');
+            value.should.be.equal('13:25:00');
         });
     });
 

@@ -12,6 +12,9 @@ var gulp = require('gulp');
 var mocha = require('gulp-mocha');
 var pure = require('gulp-pure-cjs');
 
+gulp.task('watch-build', function () {
+  gulp.watch(['./lib/**/*.js'], ['build']);
+});
 
 gulp.task('build', function() {
     return gulp.src('./lib/forms.js')
@@ -33,7 +36,7 @@ gulp.task('test', function () {
     }));
 });
 
-gulp.task('watch', function () {
+gulp.task('watch-test', function () {
   gulp.watch(['./lib/**/*.js', './test/**/*.js'], ['test']);
 });
 

@@ -2,14 +2,21 @@
 <html>
 
 <body>
+    <style>
+        label {
+            display: block;
+            width: 600px;
+        }
+    </style>
     <script src="../dist/forms.js"></script>
 
-    <input id="nome">
-    <input name="cognome">
-    <input class="eta" type="number">
-    <input type="date" name="nato">
-    <input type="time" name="ora">
-    <input type="datetime-local" name="started">
+    <label>Nome<input id="nome"></label>
+    <label>Cognome<input name="cognome"></label>
+    <label>Età<input class="eta" type="number"></label>
+    <label>Nato<input type="date" name="nato"></label>
+    <label>Ora<input type="time" name="ora"></label>
+    <label>Started<input type="datetime-local"
+        name="started"></label>
 
     <label>
     male <input type="radio" value="male" name="sex">
@@ -18,6 +25,13 @@
     <label>
     female <input type="radio" value="female" name="sex">
     </label>
+
+    <label>
+        sex
+        <select name="sex">
+            <option>male</option>
+            <option>female</option>
+        </select>
 
     <br>{
     <br>cognome:
@@ -30,6 +44,8 @@
     <span class="eta"></span>
     <br>sex:
     <span class="sex"></span>
+    <br>started:
+    <span class="started"></span>
     <br>}
     <br>
 

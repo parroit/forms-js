@@ -23,6 +23,7 @@
     _require.modules = [
         function (module, exports) {
             'use strict';
+            var dtUtils = _require(7);
             module.exports = ElementBinder;
             function ElementBinder(elm, object, name) {
                 this.elm = elm;
@@ -46,7 +47,11 @@
                 Object.unobserve(this.object, this.onChanges);
             };
             ElementBinder.prototype.model2Ui = function () {
-                this.elm[this.DOMProperty] = this.object[this.name];
+                var value = this.object[this.name];
+                if (dtUtils.isDate(value) || dtUtils.isNumber(value)) {
+                    value = value.toLocaleString();
+                }
+                this.elm[this.DOMProperty] = value;
             };
             ElementBinder.prototype.ui2Model = function () {
                 this.object[this.name] = this.elm[this.DOMProperty];
@@ -221,10 +226,18 @@
                     m
                 ].join(':');
             }
+            function isDate(value) {
+                return typeof value === 'object' && {}.toString.call(value) === '[object Date]';
+            }
+            function isNumber(value) {
+                return typeof value === 'number' || typeof value === 'object' && {}.toString.call(value) === '[object Number]';
+            }
             module.exports = {
                 toDOMTime: toDOMTime,
                 toDOMDate: toDOMDate,
-                fromDOMDate: fromDOMDate
+                fromDOMDate: fromDOMDate,
+                isDate: isDate,
+                isNumber: isNumber
             };
         },
         function (module, exports) {
