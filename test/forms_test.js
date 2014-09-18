@@ -79,7 +79,7 @@ describe('forms', function() {
         });
     });
 
-    describe.only('nested array', function() {
+    describe('nested array', function() {
         var object;
         var $name;
         var $surname;
