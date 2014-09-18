@@ -65,14 +65,14 @@ describe('InputDateTimeBinder', function() {
 
         binder.model2Ui();
 
-        $input.value.should.be.equal('1976-01-03T13:41:10+01:00');
+        $input.value.slice(0,19).should.be.equal('1976-01-03T13:41:10');
     });
 
     it('listen changes on model', function(done) {
         binder.bind();
         object.test = born();
         setTimeout(function() {
-            $input.value.should.be.equal('1976-01-03T13:41:10+01:00');
+            $input.value.slice(0,19).should.be.equal('1976-01-03T13:41:10');
             binder.unbind();
             done();
         }, 0);
