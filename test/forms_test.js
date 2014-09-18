@@ -213,6 +213,21 @@ describe('forms', function() {
 
         });
 
+        it('listen for existing object setted', function(done) {
+
+            object.sub.push({
+                name: 'Laura',
+                surname: 'Gialli'
+            });
+
+            delete object.sub[1];
+
+
+
+            checkDOMStatus(['Gigi','Laura'], done);
+
+        });
+
 
     });
 
