@@ -33,6 +33,7 @@
                 this.onChanges = onChanges.bind(this);
             }
             function onChanges(changes) {
+                console.dir(changes);
                 var _this = this;
                 changes.forEach(function (change) {
                     if (change.name === _this.name) {
@@ -51,10 +52,14 @@
                 if (dtUtils.isDate(value) || dtUtils.isNumber(value)) {
                     value = value.toLocaleString();
                 }
-                this.elm[this.DOMProperty] = value;
+                if (this.elm[this.DOMProperty] !== value) {
+                    this.elm[this.DOMProperty] = value;
+                }
             };
             ElementBinder.prototype.ui2Model = function () {
-                this.object[this.name] = this.elm[this.DOMProperty];
+                if (this.object[this.name] !== this.elm[this.DOMProperty]) {
+                    this.object[this.name] = this.elm[this.DOMProperty];
+                }
             };
         },
         function (module, exports) {
@@ -86,10 +91,14 @@
             }
             InputCheckboxBinder.prototype = Object.create(InputBinder.prototype);
             InputCheckboxBinder.prototype.model2Ui = function () {
-                this.elm.checked = this.object[this.name];
+                if (this.elm.checked !== this.object[this.name]) {
+                    this.elm.checked = this.object[this.name];
+                }
             };
             InputCheckboxBinder.prototype.ui2Model = function () {
-                this.object[this.name] = this.elm.checked;
+                if (this.object[this.name] !== this.elm.checked) {
+                    this.object[this.name] = this.elm.checked;
+                }
             };
         },
         function (module, exports) {
@@ -103,11 +112,15 @@
             InputDateBinder.prototype = Object.create(InputBinder.prototype);
             InputDateBinder.prototype.model2Ui = function () {
                 var value = dtUtils.toDOMDate(this.object[this.name]);
-                this.elm[this.DOMProperty] = value;
+                if (this.elm[this.DOMProperty] !== value) {
+                    this.elm[this.DOMProperty] = value;
+                }
             };
             InputDateBinder.prototype.ui2Model = function () {
                 var value = dtUtils.fromDOMDate(this.elm[this.DOMProperty]);
-                this.object[this.name] = value;
+                if (this.object[this.name] !== value) {
+                    this.object[this.name] = value;
+                }
             };
         },
         function (module, exports) {
@@ -124,11 +137,15 @@
                 if (value === 0 || value) {
                     value = value.toString();
                 }
-                this.elm[this.DOMProperty] = value;
+                if (this.elm[this.DOMProperty] !== value) {
+                    this.elm[this.DOMProperty] = value;
+                }
             };
             InputNumberBinder.prototype.ui2Model = function () {
                 var value = parseFloat(this.elm[this.DOMProperty]);
-                this.object[this.name] = value;
+                if (this.object[this.name] !== value) {
+                    this.object[this.name] = value;
+                }
             };
         },
         function (module, exports) {
@@ -142,14 +159,17 @@
             }
             InputRadioBinder.prototype = Object.create(InputBinder.prototype);
             InputRadioBinder.prototype.model2Ui = function () {
-                this.elm.checked = this.object[this.name] == this.value;
+                var value = this.object[this.name] == this.value;
+                if (this.elm.checked !== value) {
+                    this.elm.checked = value;
+                }
             };
             InputRadioBinder.prototype.bind = function () {
                 this.elm.addEventListener('change', this.onInput);
                 InputBinder.prototype.bind.call(this);
             };
             InputRadioBinder.prototype.ui2Model = function () {
-                if (this.elm.checked) {
+                if (this.elm.checked && this.object[this.name] !== this.value) {
                     this.object[this.name] = this.value;
                 }
             };
@@ -202,6 +222,17 @@
                 dt.setUTCMilliseconds(0);
                 return dt;
             }
+            function fromDOMDateTime(value) {
+                var dt = new Date();
+                dt.setUTCFullYear(parseInt(value.slice(0, 4)));
+                dt.setUTCMonth(parseInt(value.slice(5, 7)) - 1);
+                dt.setUTCDate(parseInt(value.slice(8, 10)));
+                dt.setUTCHours(parseInt(value.slice(11, 13)));
+                dt.setUTCMinutes(parseInt(value.slice(14, 16)));
+                dt.setUTCSeconds(parseInt(value.slice(17, 19)));
+                dt.setUTCMilliseconds(0);
+                return dt;
+            }
             function pad2(num) {
                 if (num < 10) {
                     return '0' + num;
@@ -221,9 +252,11 @@
             function toDOMTime(value) {
                 var h = pad2(value.getHours());
                 var m = pad2(value.getMinutes());
+                var s = pad2(value.getSeconds());
                 return [
                     h,
-                    m
+                    m,
+                    s
                 ].join(':');
             }
             function isDate(value) {
@@ -232,12 +265,20 @@
             function isNumber(value) {
                 return typeof value === 'number' || typeof value === 'object' && {}.toString.call(value) === '[object Number]';
             }
+            function toIsoString(dtValue) {
+                var tz = dtValue.getTimezoneOffset();
+                var value = toDOMDate(dtValue) + 'T' + toDOMTime(dtValue) + (tz > 0 ? '-' : '+') + pad2(Math.abs(Math.floor(tz / 60))) + ':' + pad2(Math.abs(tz % 60));
+                return value;
+            }
             module.exports = {
                 toDOMTime: toDOMTime,
                 toDOMDate: toDOMDate,
                 fromDOMDate: fromDOMDate,
+                fromDOMDateTime: fromDOMDateTime,
                 isDate: isDate,
-                isNumber: isNumber
+                isNumber: isNumber,
+                pad2: pad2,
+                toIsoString: toIsoString
             };
         },
         function (module, exports) {
@@ -296,9 +337,12 @@
             }
             function bindObject(element, object) {
                 var ctx = {
-                        props: Object.keys(object),
+                        props: [],
                         results: {}
                     };
+                for (var prop in object) {
+                    ctx.props.push(prop);
+                }
                 domVisitor(element, maybeBind, ctx);
                 var i = 0;
                 var bindedProps = Object.keys(ctx.results);
@@ -314,7 +358,81 @@
                     bindElms.forEach(bindIt(bindedProp));
                 }
             }
+            function bindArray(element, array) {
+                var parent = element.parentNode;
+                var bindedChildren = [];
+                function startingBind() {
+                    var i = 1;
+                    var l = array.length;
+                    for (; i < l; i++) {
+                        var cloned = element.cloneNode(true);
+                        parent.appendChild(cloned);
+                        bindObject(cloned, array[i]);
+                        bindedChildren[i] = cloned;
+                    }
+                    if (l > 0) {
+                        element.style.display = null;
+                        bindObject(element, array[0]);
+                        bindedChildren[0] = element;
+                    } else {
+                        element.style.display = 'none';
+                    }
+                }
+                function itemsSpliced(change) {
+                    var i = change.index;
+                    var l = change.index + change.removed.length;
+                    for (; i < l; i++) {
+                        var removingElm = bindedChildren[i];
+                        parent.removeChild(removingElm);
+                    }
+                    bindedChildren.splice(change.index, change.removed.length);
+                    i = 0;
+                    l = change.addedCount;
+                    for (; i < l; i++) {
+                        var cloned = element.cloneNode(true);
+                        parent.appendChild(cloned);
+                        bindedChildren[change.index + i] = cloned;
+                        bindObject(cloned, array[change.index + i]);
+                    }
+                }
+                function itemUpdated(change) {
+                    var elm = bindedChildren[change.name];
+                    var newElm = element.cloneNode(true);
+                    parent.insertBefore(newElm, elm);
+                    parent.removeChild(elm);
+                    bindedChildren[change.name] = newElm;
+                    bindObject(newElm, array[change.name]);
+                }
+                function itemDeleted(change) {
+                    var elmRemoved = bindedChildren[change.name];
+                    parent.removeChild(elmRemoved);
+                    delete bindedChildren[change.name];
+                }
+                function onArrayChange(change) {
+                    if (change.type === 'splice') {
+                        return itemsSpliced(change);
+                    }
+                    if (change.type === 'updated') {
+                        return itemUpdated(change);
+                    }
+                    if (change.type === 'deleted') {
+                        return itemDeleted(change);
+                    }
+                    console.dir(change);
+                }
+                startingBind();
+                Array.observe(array, function (changes) {
+                    changes.forEach(onArrayChange);
+                });
+            }
             function bindProperty(element, object, name) {
+                var value = object[name];
+                if (typeof value === 'object' && !dtUtils.isDate(value) && !Array.isArray(value)) {
+                    return bindObject(element, value);
+                }
+                if (Array.isArray(value)) {
+                    return bindArray(element, value);
+                }
                 var Binder = binderChooser(element, object, name);
                 var binder = new Binder(element, object, name);
                 binder.bind();

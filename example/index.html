@@ -3,27 +3,40 @@
 
 <body>
     <style>
-        label {
-            display: block;
-            width: 600px;
-        }
+    label {
+        display: block;
+        width: 600px;
+    }
     </style>
     <script src="../dist/forms.js"></script>
 
-    <label>Nome<input id="nome"></label>
-    <label>Cognome<input name="cognome"></label>
-    <label>Età<input class="eta" type="number"></label>
-    <label>Nato<input type="date" name="nato"></label>
-    <label>Ora<input type="time" name="ora"></label>
-    <label>Started<input type="datetime-local"
-        name="started"></label>
-
-    <label>
-    male <input type="radio" value="male" name="sex">
+    <label>Nome
+        <input id="nome">
+    </label>
+    <label>Cognome
+        <input name="cognome">
+    </label>
+    <label>Età
+        <input class="eta" type="number">
+    </label>
+    <label>Nato
+        <input type="date" name="nato">
+    </label>
+    <label>Ora
+        <input type="time" name="ora">
+    </label>
+    <label>Started
+        <input type="datetime-local" name="started">
     </label>
 
     <label>
-    female <input type="radio" value="female" name="sex">
+        male
+        <input type="radio" value="male" name="sex">
+    </label>
+
+    <label>
+        female
+        <input type="radio" value="female" name="sex">
     </label>
 
     <label>
@@ -33,56 +46,112 @@
             <option>female</option>
         </select>
 
-    <br>{
-    <br>cognome:
-    <span class="cognome"></span>,
-    <br>nome:
-    <span class="nome"></span>,
-    <br>nato:
-    <span class="nato"></span>,
-    <br>eta:
-    <span class="eta"></span>
-    <br>sex:
-    <span class="sex"></span>
-    <br>started:
-    <span class="started"></span>
-    <br>}
-    <br>
+        <br>{
+        <br>cognome:
+        <span class="cognome"></span>,
+        <br>nome:
+        <span class="nome"></span>,
+        <br>nato:
+        <span class="nato"></span>,
+        <br>eta:
+        <span class="eta"></span>
+        <br>sex:
+        <span class="sex"></span>
+        <br>started:
+        <span class="started"></span>
+        <br>}
+        <br>
 
-    <button id="taglia" type="button">
-        taglia
-    </button>
+        <table>
+            <thead>
+                <tr>
+                    <td>Quantità</td>
+                    <td>Cadauno</td>
+                    <td>Totale</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="righe">
+                    <td>
+                        <input name="qty" type="number">
+                    </td>
+                    <td>
+                        <input name="cadauno" type="number">
+                    </td>
+                    <td>
+                        <input readonly name="totale" type="number">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-    <script>
-    var object = {
-        nome: 'Andrea',
-        cognome: 'Parodi',
-        eta: 38,
-        nato: new Date(),
-        ora: new Date(),
-        started: new Date(),
-        sex: ''
-    };
+        <button id="taglia" type="button">
+            taglia
+        </button>
 
-    object.nato.setUTCFullYear(1976);
-    object.nato.setUTCMonth(0);
-    object.nato.setUTCDate(3);
-    object.nato.setUTCHours(0);
-    object.nato.setUTCMinutes(0);
-    object.nato.setUTCSeconds(0);
-    object.nato.setUTCMilliseconds(0);
+        <script>
+        var object = {
+            nome: 'Andrea',
+            cognome: 'Parodi',
+            eta: 38,
+            nato: new Date(1976, 0, 3),
+            ora: new Date(),
+            started: new Date(),
+            sex: '',
+            righe: []
+        };
+
+        var target = document.querySelector('#check');
+
+        function onChange(riga) {
+            return function(change) {
+                if (change.name === 'qty' ||
+                    change.name === 'cadauno') {
+
+                    try {
+                        var notifier = Object.getNotifier(riga);
+
+                        notifier.notify({
+                            type: 'update',
+                            name: 'totale',
+                            oldValue: 0
+                        });
+                    } catch (err) {
+                        alert(err);
+                    }
 
 
-    var target = document.querySelector('#check');
+                }
+            };
+        }
 
-    taglia.addEventListener('click', function() {
-        object.eta++;
-    });
+        function Riga() {
+            var riga = this;
 
-    forms.bindObject(document.body, object);
+            riga.qty = 1;
+            riga.cadauno = 0.0;
 
+            Object.observe(riga, function(changes) {
+                changes.forEach(onChange(riga));
+            });
+        }
 
-    </script>
+        Object.defineProperty(
+            Riga.prototype,
+            'totale', {
+                enumerable: true,
+                get: function() {
+                    return this.qty * this.cadauno;
+                }
+            }
+        );
+
+        taglia.addEventListener('click', function() {
+            object.righe.push(new Riga());
+        });
+
+        forms.bindObject(document.body, object);
+        </script>
 </body>
 
 </html>
