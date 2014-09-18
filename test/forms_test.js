@@ -99,7 +99,7 @@ describe('forms', function() {
 
             jsdom.env(
                 '<div id="container">' +
-                '   <div id="sub">' +
+                '   <div class="sub">' +
                 '       <input class="name" type="text">' +
                 '       <span class="surname"/>' +
                 '   </div>' +
@@ -155,19 +155,23 @@ describe('forms', function() {
 
         });
 
-        function checkDOMStatus(names, done){
-            utils.later(function(){
+        function checkDOMStatus(names, done) {
+            utils.later(function() {
                 var $name = window.document.getElementsByClassName('name');
+                if($name.length != names.length) {
+                    console.log([].slice.call($name).map(function(e){return e.outerHTML;}));
+                }               
+                    
 
                 $name.length.should.be.equal(names.length);
 
                 var i = 0;
                 var l = names.length;
-                for (; i<l; i++) {
+                for (; i < l; i++) {
                     $name[i].value.should.be.equal(names[i]);
                 }
 
-            },done);
+            }, done);
         }
 
         it('listen for object pushed', function(done) {
@@ -175,14 +179,14 @@ describe('forms', function() {
                 name: 'Giorgio',
                 surname: 'Parodi'
             });
-            checkDOMStatus(['Andrea','Pino','Giorgio'], done);
+            checkDOMStatus(['Andrea', 'Pino', 'Giorgio'], done);
         });
 
         it('listen for object spliced at end', function(done) {
-            object.sub.splice(2,1);
+            object.sub.splice(2, 1);
             //console.dir(object)
 
-            checkDOMStatus(['Andrea','Pino'], done);
+            checkDOMStatus(['Andrea', 'Pino'], done);
         });
 
         it('listen for new object setted', function(done) {
@@ -190,30 +194,33 @@ describe('forms', function() {
                 name: 'Giorgio',
                 surname: 'Parodi'
             };
-            checkDOMStatus(['Andrea','Pino','Giorgio'], done);
+            checkDOMStatus(['Andrea', 'Pino', 'Giorgio'], done);
 
         });
 
         it('listen for object spliced at middle', function(done) {
             global.loggo = true;
-            object.sub.splice(1,1);
+            object.sub.splice(1, 1);
 
-            checkDOMStatus(['Andrea','Giorgio'], done);
-
-        });
-
-        it('listen for existing object setted', function(done) {
-
-            object.sub[0] = {
-                name: 'Gigi',
-                surname: 'Bubu'
-            };
-
-            checkDOMStatus(['Gigi','Giorgio'], done);
+            checkDOMStatus(['Andrea', 'Giorgio'], done);
 
         });
 
-        it('listen for existing object setted', function(done) {
+
+        //describe.only('this',function() {
+            it('listen for existing object setted', function(done) {
+
+                object.sub[0] = {
+                    name: 'Gigi',
+                    surname: 'Bubu'
+                };
+
+                checkDOMStatus(['Gigi', 'Giorgio'], done);
+
+            });
+        //});
+
+        it('listen for deleted object', function(done) {
 
             object.sub.push({
                 name: 'Laura',
@@ -222,9 +229,9 @@ describe('forms', function() {
 
             delete object.sub[1];
 
+//            console.dir(object.sub)
 
-
-            checkDOMStatus(['Gigi','Laura'], done);
+            checkDOMStatus(['Gigi', 'Laura'], done);
 
         });
 
